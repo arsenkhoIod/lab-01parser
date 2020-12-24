@@ -1,12 +1,12 @@
 // Copyright 2020 Your Name <your_email>
 #include <Parsing.hpp>
 
-Parsing::Parsing()
+Parsing::Parsing()//конструктор
 {
   this->StudList = new struct Students;
   this->StudList->_meta.count = 0;
 }
-Parsing::~Parsing()
+Parsing::~Parsing()//деструктор
 {
   if (!this->StudList->Items.empty()){
     for (auto & Item : this->StudList->Items){
@@ -15,14 +15,16 @@ Parsing::~Parsing()
   }
   delete this->StudList;
 }
-void Parsing::set_data(std::string& s)
+void Parsing::set_data(std::string& s)//берём строку,в которой находится полный
+// путь до файла
 {
   std::ifstream file;
   file.open(s);
 
   if (!file)
     throw std::runtime_error("Unable to open file: " + s);
-  this->data = json::parse(file);
+  this->data = json::parse(file);//data - поле класса типа json,туда заносим все
+  //данные со всего файла
   if (data.at("items").empty())
     throw std::runtime_error("No items in file");
   if (data.at("_meta").empty())
@@ -74,7 +76,7 @@ std::any Parsing::get_debt(const json& jit)
   else
     return jit.get<std::vector<std::string> >();
 }
-void Parsing::item_fjson(const json& jit)
+void Parsing::item_fjson(const json& jit)//прибавление студентов, добав. итемы
 {
   this->StudList->Items.push_back(new Item);
   Item* tmp = this->StudList->Items.back();
@@ -83,7 +85,7 @@ void Parsing::item_fjson(const json& jit)
   tmp->avg = get_avg(jit.at("avg"));
   tmp->debt = get_debt(jit.at("debt"));
 }
-void Parsing::from_json() {
+void Parsing::from_json() {//проходим по всем объектам файла
   set_count();
   //      Создание вектора объектов json
   std::vector<json> ItemsVec;
@@ -93,7 +95,7 @@ void Parsing::from_json() {
     throw std::runtime_error{"content of _meta != real count of items"};
   if (this->StudList->Items.empty() && get_count() != 0) {
     for (int i = 0; i < get_count(); i++) {
-      item_fjson(ItemsVec[i]);
+      item_fjson(ItemsVec[i]);//используем метод для каждого студента
     }
   }
 }
@@ -190,7 +192,8 @@ std::string Parsing::print()
   }
   return out.str();
 }
-std::string Parsing::convert_to_string(const std::any& any) {
+std::string Parsing::convert_to_string(const std::any& any) {//получаем any
+  // и в зависимости от типа данных в ней, конвертируем в строку.
   if (!strcmp(any.type().name(),
               "NSt7__cxx1112basic_stringIcSt11char_traitsIcESaIcEEE"))
   {

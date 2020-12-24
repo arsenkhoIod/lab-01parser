@@ -37,14 +37,14 @@ TEST(Print, All_is_Correct) {
     "count": 3
   }
 })";
-  std::ofstream testFile;
-  testFile.open("json_file.json");
-  testFile << test_string;
-  testFile.close();
+  std::ofstream testFile; //создаём тестовый файл
+  testFile.open("json_file.json");//открываем
+  testFile << test_string;//записываем строку
+  testFile.close();//закрываем файл
   Parsing List;
   std::string str = "json_file.json";
-  List.set_data(str);
-  List.from_json();
+  List.set_data(str);//передаём директорию и заносим в поле класса
+  List.from_json();//устанавливаю вс итемы и мета
 
   std::string res_string = \
  R"(| name          | group  | avg  | debt    |
@@ -55,7 +55,7 @@ TEST(Print, All_is_Correct) {
 |---------------|--------|------|---------|
 | Pertov Nikita | IU8-31 | 3.33 | 3 items |
 |---------------|--------|------|---------|
-)";
+)";//строка, которую мы ожидаем
   EXPECT_EQ(List.print(), res_string);
 }
 TEST(AddData, Correctfile){
@@ -98,8 +98,8 @@ TEST(AddData, Correctfile){
   List.set_data(str);
   std::ifstream file("json_file.json");
   EXPECT_EQ(json::parse(file), List.get_data());
-}
-TEST(AddData, UncorrectFile){
+}//проверяем правильно ли считали
+TEST(AddData, UncorrectFile){//проверяем наличие файла и возможноть открытия
   std::string res_str = "Unable to open file: json_fil.json";
   Parsing List;
   std::string str = "json_fil.json";
@@ -110,7 +110,7 @@ TEST(AddData, UncorrectFile){
     EXPECT_EQ(err.what(), res_str);
   }
 }
-TEST(AddData, EmptyItems){
+TEST(AddData, EmptyItems){//проверяем итемы
   std::string res_str = "No items in file";
 
   std:: string test_string = \
@@ -130,11 +130,11 @@ TEST(AddData, EmptyItems){
     std::string str = "json_file.json";
     List.set_data(str);
   }
-  catch (std::runtime_error& err) {
+  catch (std::runtime_error& err) {//ловим error
     EXPECT_EQ(err.what(), res_str);
   }
 }
-TEST(AddData, EmptyMeta){
+TEST(AddData, EmptyMeta){//проверяем мета
   std:: string test_string = \
  R"({
   "items": [
@@ -218,7 +218,8 @@ TEST(SetCount, AllCorrect){
   List.set_count();
   EXPECT_EQ(List.get_count(), 3);
 }
-TEST(GetName, AllCorrect){
+TEST(GetName, AllCorrect){//проверяем правильность метода перевода имени из
+  //json в строку
   json js = json::parse(R"({
   "name": "Ivanov Petr",
   "group": "1",
@@ -229,7 +230,7 @@ TEST(GetName, AllCorrect){
   std::string res_string = "Ivanov Petr";
   EXPECT_EQ(res_string, Parsing::get_name(js.at("name")));
 }
-TEST(GetName, NameNoString){
+TEST(GetName, NameNoString){//если имя не строка
   json js = json::parse(R"({
   "name": 12,
   "group": "1",
@@ -244,7 +245,7 @@ TEST(GetName, NameNoString){
     EXPECT_EQ(err.what(), res_string);
   }
 }
-TEST(GetAvg, StringAvg){
+TEST(GetAvg, StringAvg){//проверяем get_avg на строку
   json js = json::parse(R"({
   "name": "Ivanov Petr",
   "group": "1",
@@ -255,7 +256,7 @@ TEST(GetAvg, StringAvg){
   EXPECT_EQ(res_string,
             std::any_cast<std::string>(Parsing::get_avg(js.at("avg"))));
 }
-TEST(GetAvg, NullAvg){
+TEST(GetAvg, NullAvg){//проверяем get_avg на ноль
   json js = json::parse(R"({
   "name": "Ivanov Petr",
   "group": "1",
@@ -352,7 +353,7 @@ TEST(GetDebt, VectorDebt){
   std::vector<std::string> res_vec{"C++", "Linux", "Network"};
   EXPECT_EQ(res_vec, std::any_cast<std::vector<std::string>>(res));
 }
-TEST(ItemFjson, AllCorrect){
+TEST(ItemFjson, AllCorrect){//веряем правильость метода ItemFjson
   json js = json::parse(R"({
   "name": "Ivanov Petr",
   "group": null,
@@ -371,7 +372,8 @@ TEST(ItemFjson, AllCorrect){
   std::any debt = List.get_Studlist()->Items.back()->debt;
   EXPECT_EQ(res_debt, std::any_cast<std::string>(debt));
 }
-TEST(FromJson, ArrSizeNotMeta) {
+TEST(FromJson, ArrSizeNotMeta) {//проверяем, что колличество студентов и мета
+  //равно
   std::string test_string =
       R"({
   "items": [
@@ -416,12 +418,15 @@ TEST(FromJson, ArrSizeNotMeta) {
     EXPECT_EQ(err.what(), res_str);
   }
 }
+
+//проверяем правильность перевода any в строку из разных типов
 TEST(Convertation, Fromstring){
   std::string str = "Hey";
   std::any a = str;
   std::string res_str = "Hey";
   EXPECT_EQ(res_str, Parsing::convert_to_string(a));
 }
+
 TEST(Convertation, FromInt){
   std::size_t integer = 12;
   std::any a = integer;

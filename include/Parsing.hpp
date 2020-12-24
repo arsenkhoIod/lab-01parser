@@ -7,12 +7,11 @@
 #include <any>
 #include <fstream>
 #include <vector>
-#include <variant>
 #include <cstring>
 #include <iterator>
 #include <string>
 
-using json = nlohmann::json;
+using json = nlohmann::json;//заменяем название
 struct Item
 {
   std::string name;

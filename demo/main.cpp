@@ -1,7 +1,6 @@
 #include <Parsing.hpp>
 
 int main(){
-
   Parsing List;
   std::string str = "../Students.json";
   List.set_data(str);
