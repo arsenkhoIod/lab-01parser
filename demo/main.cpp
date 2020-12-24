@@ -7,4 +7,3 @@ int main(){
   List.from_json();
   std::cout << List.print();
 }
-
